@@ -57,7 +57,7 @@ export default {
             .attr("class", "y axis")
             .call(yAxis);
 
-        chart.selectAll(".bar")
+        chart.append("g").selectAll(".bar")
             .data(this.data)
             .enter().append("rect")
             .attr("class", "bar")
@@ -65,11 +65,31 @@ export default {
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height - y(d.value); })
             .attr("width", x.bandwidth() - 1);
+
+        chart.append("g").selectAll("text")
+            .data(this.data)
+            .enter()
+            .append("text")
+            .attr("font-famliy", "sans-serif")
+            .attr("font-size", "14px")
+            .attr("fill", "white")
+            .attr("text-anchor", "middle")
+            .attr("x", function(d) { return x(d.name) + (x.bandwidth() / 2); })
+            .attr("y", function(d) { return y(d.value) + 10; })
+            .attr("dy", ".75em")
+            .text(function(d) { return d.value; });     
     }
 }
 </script>
 
 <style>
+    .chart .bar text {
+        fill: white;
+        font: 10px sans-serif;
+        text-anchor: end;
+        z-index: 10;
+    }
+
     .bar {
         fill: steelblue;
     }
