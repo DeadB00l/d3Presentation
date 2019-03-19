@@ -1,13 +1,30 @@
 <template>
-    <div class="chart">
-    <div style="width: 40px;">4</div>
-    <div style="width: 80px;">8</div>
-    <div style="width: 150px;">42</div>
-    <div style="width: 160px;">16</div>
-    <div style="width: 230px;">23</div>
-    <div style="width: 420px;">32</div>
-  </div>
+  <div class="chart" />
 </template>
+
+<script>
+import * as d3 from 'd3';
+
+export default {
+  name: 'HelloWorld',
+  data() {
+    return {
+      data: [4, 8, 42, 16, 32, 1]
+    }
+  },
+
+  mounted() {
+    d3.select(".chart")
+      .selectAll("div")
+        .data(this.data)
+      .enter().append("div")
+        .style("width", function(d) { return d * 10 + "px"; })
+        .text(function(d) { return d; });
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
   .chart div {
     font: 10px sans-serif;
