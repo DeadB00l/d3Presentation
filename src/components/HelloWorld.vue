@@ -1,5 +1,5 @@
 <template>
-  <svg class="chart" style="border: 1px solid black;" width="420" height="120" />
+  <svg class="chart" style="border:1px solid black" width="420" height="120" />
 </template>
 
 <script>
@@ -22,8 +22,9 @@ export default {
     },
 
     mounted() {
-        let width = 960,
-            height = 500;
+        let margin = {top: 20, right: 30, bottom: 30, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
 
         let x = scaleBand()            
             .rangeRound([0, width], .1)
@@ -34,8 +35,10 @@ export default {
             .domain([0, d3.max(this.data, function(d) { return d.value; })]);
 
         let chart = d3.select(".chart")
-            .attr("width", width)
-            .attr("height", height);        
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         let bar = chart.selectAll("g")
             .data(this.data)
