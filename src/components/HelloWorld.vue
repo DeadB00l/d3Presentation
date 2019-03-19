@@ -4,6 +4,7 @@
 
 <script>
 import * as d3 from 'd3';
+import {scaleLinear} from "d3-scale";
 
 export default {
   name: 'HelloWorld',
@@ -14,11 +15,15 @@ export default {
   },
 
   mounted() {
+    let x = scaleLinear()
+          .domain([0, d3.max(this.data)])
+          .range([0, 420]);
+          
     d3.select(".chart")
       .selectAll("div")
         .data(this.data)
       .enter().append("div")
-        .style("width", function(d) { return d * 10 + "px"; })
+        .style("width", function(d) { return x(d) + "px"; })
         .text(function(d) { return d; });
   }
 }
