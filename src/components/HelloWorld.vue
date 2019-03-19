@@ -6,6 +6,7 @@
 import * as d3 from 'd3';
 import {scaleLinear,scaleBand} from "d3-scale";
 import { axisBottom,axisLeft } from "d3-axis";
+import { easeBounce } from "d3-ease";
 
 export default {
     name: 'HelloWorld',
@@ -62,9 +63,14 @@ export default {
             .enter().append("rect")
             .attr("class", "bar")
             .attr("x", function(d) { return x(d.name); })
+            .attr("y", height)
+            .attr("height", 0)
+            .attr("width", x.bandwidth() - 1);
+
+        chart.selectAll(".bar")
+            .transition().duration(1500)
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height - y(d.value); })
-            .attr("width", x.bandwidth() - 1);
 
         chart.append("g").selectAll("text")
             .data(this.data)
