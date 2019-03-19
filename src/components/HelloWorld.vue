@@ -5,6 +5,7 @@
 <script>
 import * as d3 from 'd3';
 import {scaleLinear,scaleBand} from "d3-scale";
+import { axisBottom,axisLeft } from "d3-axis";
 
 export default {
     name: 'HelloWorld',
@@ -30,9 +31,16 @@ export default {
             .rangeRound([0, width], .1)
             .domain(this.data.map(function(d) { return d.name; }));
 
+        let xAxis = axisBottom()
+            .scale(x);
+
         let y = scaleLinear()
             .range([height, 0])
             .domain([0, d3.max(this.data, function(d) { return d.value; })]);
+
+        let yAxis = axisLeft()
+            .scale(y)
+            .ticks(10);
 
         let chart = d3.select(".chart")
             .attr("width", width + margin.left + margin.right)
@@ -40,33 +48,44 @@ export default {
         .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        let bar = chart.selectAll("g")
-            .data(this.data)
-            .enter().append("g")
-            .attr("transform", function(d) { return "translate(" + x(d.name) + ",0)"; });
+        chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
-        bar.append("rect")
+        chart.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+
+        chart.selectAll(".bar")
+            .data(this.data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.name); })
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return height - y(d.value); })
             .attr("width", x.bandwidth() - 1);
-
-        bar.append("text")
-            .attr("x", x.bandwidth() / 2)
-            .attr("y", function(d) { return y(d.value) + 3; })
-            .attr("dy", ".75em")
-            .text(function(d) { return d.value; });
-	}
+    }
 }
 </script>
 
 <style>
-  .chart rect {
-    fill: steelblue;
-  }
+    .bar {
+        fill: steelblue;
+    }
 
-  .chart text {
-    fill: white;
-    font: 10px sans-serif;
-    text-anchor: end;
-  }
+    .axis text {
+        font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .x.axis path {
+        display: none;
+    }
 </style>
