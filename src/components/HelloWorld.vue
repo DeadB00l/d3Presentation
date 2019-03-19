@@ -1,40 +1,58 @@
 <template>
-    <svg class="chart" width="420" height="120">
-    <g transform="translate(0,0)">
-        <rect width="40" height="19"></rect>
-        <text x="37" y="9.5" dy=".35em">4</text>
-    </g>
-    <g transform="translate(0,20)">
-        <rect width="80" height="19"></rect>
-        <text x="77" y="9.5" dy=".35em">8</text>
-    </g>
-    <g transform="translate(0,40)">
-        <rect width="150" height="19"></rect>
-        <text x="147" y="9.5" dy=".35em">42</text>
-    </g>
-    <g transform="translate(0,60)">
-        <rect width="160" height="19"></rect>
-        <text x="157" y="9.5" dy=".35em">16</text>
-    </g>
-    <g transform="translate(0,80)">
-        <rect width="230" height="19"></rect>
-        <text x="227" y="9.5" dy=".35em">32</text>
-    </g>
-    <g transform="translate(0,100)">
-        <rect width="420" height="19"></rect>
-        <text x="417" y="9.5" dy=".35em">23</text>
-    </g>
-    </svg>
+  <svg class="chart" width="420" height="120" />
 </template>
 
-<style>
-.chart rect {
-  fill: steelblue;
-}
+<script>
+import * as d3 from 'd3';
+import {scaleLinear} from "d3-scale";
 
-.chart text {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: end;
+export default {
+  name: 'HelloWorld',
+  data() {
+    return {
+      data: [4, 8, 42, 16, 32, 1]
+    }
+  },
+
+  mounted() {
+    let width = 420;
+    let barHeight = 20;
+
+    let x = scaleLinear()
+        .domain([0, d3.max(this.data)])
+        .range([0, width]);
+
+    let chart = d3.select(".chart")
+        .attr("width", width)
+        .attr("height", barHeight * this.data.length);
+
+    let bar = chart.selectAll("g")
+        .data(this.data)
+      .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+    bar.append("rect")
+        .attr("width", x)
+        .attr("height", barHeight - 1);
+
+    bar.append("text")
+        .attr("x", function(d) { return x(d) - 3; })
+        .attr("y", barHeight / 2)
+        .attr("dy", ".35em")
+        .text(function(d) { return d; });
+  }
 }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+  .chart rect {
+    fill: steelblue;
+  }
+
+  .chart text {
+    fill: white;
+    font: 10px sans-serif;
+    text-anchor: end;
+  }
 </style>
